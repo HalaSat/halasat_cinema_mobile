@@ -1,29 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
+import 'models/post.dart';
 import 'services/vodu.dart';
+import 'widgets/movie_card.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  final Future<Post> post = fetchPost(21);
+
   @override
   Widget build(BuildContext context) {
-    fetchPost(21).then(print);
     return MaterialApp(
       title: 'HalaSat Cinema',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-          body: Center(
-        child: FlatButton(
-          child: Text('HalaSat Cinema'),
-          onPressed: () async {
-            String url = 'https://flutter.io';
-            if (await canLaunch(url)) await launch(url, forceWebView: true);
-          },
+        body: Center(
+          child: FutureBuilder(
+            future: post,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                final Post post = snapshot.data;
+                final Movie movie = post.movies[0];
+                return MovieCard(movie: movie);
+              } else if (snapshot.hasError)
+                return Text(
+                  snapshot.error,
+                  style: TextStyle(color: Colors.red),
+                );
+              return CircularProgressIndicator();
+            },
+          ),
         ),
-      )),
+      ),
     );
   }
 }
