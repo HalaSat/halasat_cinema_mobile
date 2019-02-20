@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'models/post.dart';
-import 'services/vodu.dart';
-import 'widgets/movie_card.dart';
+import 'services/vodu/vodu.dart';
+import 'widgets/post_card.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,8 +23,7 @@ class MyApp extends StatelessWidget {
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
                 final Post post = snapshot.data;
-                final Movie movie = post.movies[0];
-                return MovieCard(movie: movie);
+                return PostCard(post: post);
               } else if (snapshot.hasError)
                 return Text(
                   snapshot.error,
