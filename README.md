@@ -1,16 +1,16 @@
-# halasat_cinema_mobile
+# HalaSat TV Mobile
 
-Vodu client for streaming movies and tv shows.
+An iOS client for HalaSat TV service.
 
-## Getting Started
+## Get Packages
 
-This project is a starting point for a Flutter application.
+```bash
+flutter packages get
+```
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+## Run
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter run
+```
