@@ -1,7 +1,7 @@
 import 'fetch.dart';
-import '../../models/serializers.dart';
-import '../../models/post.dart';
-import '../../const.dart';
+import '../models/serializers.dart';
+import '../models/post.dart';
+import '../const.dart';
 
 Future<Post> fetchPost(int id) async {
   final Map<String, dynamic> data = await fetch(

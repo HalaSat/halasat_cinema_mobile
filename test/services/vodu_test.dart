@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:halasat_cinema_mobile/services/vodu/vodu.dart';
+import 'package:halasat_cinema_mobile/src/services/vodu.dart';
 
 main() {
   test('Vodu api/post test', () async {

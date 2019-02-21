@@ -22,13 +22,17 @@ abstract class Movie implements Built<Movie, MovieBuilder> {
   @nullable
   String get uniqid;
   String get title;
+  @nullable
   String get imdb;
   String get type;
+  @nullable
   String get trailer;
+  @nullable
   String get director;
   String get writer;
   String get cast;
   String get story;
+  @nullable
   String get genre;
   String get year;
   @nullable

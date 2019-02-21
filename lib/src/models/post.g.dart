@@ -78,16 +78,8 @@ class _$MovieSerializer implements StructuredSerializer<Movie> {
       'title',
       serializers.serialize(object.title,
           specifiedType: const FullType(String)),
-      'imdb',
-      serializers.serialize(object.imdb, specifiedType: const FullType(String)),
       'type',
       serializers.serialize(object.type, specifiedType: const FullType(String)),
-      'trailer',
-      serializers.serialize(object.trailer,
-          specifiedType: const FullType(String)),
-      'director',
-      serializers.serialize(object.director,
-          specifiedType: const FullType(String)),
       'writer',
       serializers.serialize(object.writer,
           specifiedType: const FullType(String)),
@@ -96,9 +88,6 @@ class _$MovieSerializer implements StructuredSerializer<Movie> {
       'story',
       serializers.serialize(object.story,
           specifiedType: const FullType(String)),
-      'genre',
-      serializers.serialize(object.genre,
-          specifiedType: const FullType(String)),
       'year',
       serializers.serialize(object.year, specifiedType: const FullType(String)),
     ];
@@ -106,6 +95,30 @@ class _$MovieSerializer implements StructuredSerializer<Movie> {
       result
         ..add('uniqid')
         ..add(serializers.serialize(object.uniqid,
+            specifiedType: const FullType(String)));
+    }
+    if (object.imdb != null) {
+      result
+        ..add('imdb')
+        ..add(serializers.serialize(object.imdb,
+            specifiedType: const FullType(String)));
+    }
+    if (object.trailer != null) {
+      result
+        ..add('trailer')
+        ..add(serializers.serialize(object.trailer,
+            specifiedType: const FullType(String)));
+    }
+    if (object.director != null) {
+      result
+        ..add('director')
+        ..add(serializers.serialize(object.director,
+            specifiedType: const FullType(String)));
+    }
+    if (object.genre != null) {
+      result
+        ..add('genre')
+        ..add(serializers.serialize(object.genre,
             specifiedType: const FullType(String)));
     }
     if (object.mpr != null) {
@@ -941,17 +954,8 @@ class _$Movie extends Movie {
     if (title == null) {
       throw new BuiltValueNullFieldError('Movie', 'title');
     }
-    if (imdb == null) {
-      throw new BuiltValueNullFieldError('Movie', 'imdb');
-    }
     if (type == null) {
       throw new BuiltValueNullFieldError('Movie', 'type');
-    }
-    if (trailer == null) {
-      throw new BuiltValueNullFieldError('Movie', 'trailer');
-    }
-    if (director == null) {
-      throw new BuiltValueNullFieldError('Movie', 'director');
     }
     if (writer == null) {
       throw new BuiltValueNullFieldError('Movie', 'writer');
@@ -961,9 +965,6 @@ class _$Movie extends Movie {
     }
     if (story == null) {
       throw new BuiltValueNullFieldError('Movie', 'story');
-    }
-    if (genre == null) {
-      throw new BuiltValueNullFieldError('Movie', 'genre');
     }
     if (year == null) {
       throw new BuiltValueNullFieldError('Movie', 'year');

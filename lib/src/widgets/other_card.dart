@@ -4,7 +4,9 @@ import '../models/post.dart';
 
 class OtherCard extends StatelessWidget {
   final Other other;
-  const OtherCard({Key key, @required this.other});
+  const OtherCard({Key key, @required this.other})
+      : assert(other != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,16 +21,18 @@ class OtherCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0),
                 child: Image.network(
                   other.poster,
-                  width: 150,
+                  width: 150.0,
                   height: 240.5,
                   fit: BoxFit.cover,
                 ),
               ),
-              Padding(
+              Container(
+                width: 150.0,
                 padding: const EdgeInsets.only(top: 3.0),
                 child: Text(
                   other.title,
                   textAlign: TextAlign.start,
+                  style: Theme.of(context).textTheme.overline,
                 ),
               )
             ],

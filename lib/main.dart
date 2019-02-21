@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'models/post.dart';
-import 'services/vodu/vodu.dart';
-import 'widgets/post_card.dart';
+import 'src/models/post.dart';
+import 'src/services/vodu.dart';
+import 'src/widgets/post_card.dart';
 
 void main() => runApp(MyApp());
 
