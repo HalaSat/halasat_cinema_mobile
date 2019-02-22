@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'fetch.dart';
 import '../models/serializers.dart';
 import '../models/featured.dart';
