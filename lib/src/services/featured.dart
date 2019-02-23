@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'fetch.dart';
-import '../models/serializers.dart';
-import '../models/featured.dart';
-import '../const.dart';
+import 'package:halasat_cinema_mobile/src/const.dart';
+import 'package:halasat_cinema_mobile/src/models/serializers.dart';
+import 'package:halasat_cinema_mobile/src/models/featured.dart';
+import 'package:halasat_cinema_mobile/src/services/fetch.dart';
 
 const String kSuffix = '/api/featured';
 

@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'fetch.dart';
-import '../models/serializers.dart';
-import '../models/season.dart';
-import '../const.dart';
+import 'package:halasat_cinema_mobile/src/services/fetch.dart';
+import 'package:halasat_cinema_mobile/src/models/serializers.dart';
+import 'package:halasat_cinema_mobile/src/models/season.dart';
+import 'package:halasat_cinema_mobile/src/const.dart';
 
 Future<List<Season>> fetchSeries(int id) async {
   final List<dynamic> data = await fetch(

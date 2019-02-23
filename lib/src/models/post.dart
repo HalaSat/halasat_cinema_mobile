@@ -2,7 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
-import 'post_list.dart';
+import 'package:halasat_cinema_mobile/src/models/post_list.dart';
 
 part 'post.g.dart';
 

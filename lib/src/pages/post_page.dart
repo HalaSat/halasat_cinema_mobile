@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:android_intent/android_intent.dart';
 
-import '../services/vodu.dart';
-import '../models/post_list.dart';
-import '../widgets/post_card.dart';
-import '../models/post.dart';
+import 'package:android_intent/android_intent.dart';
+import 'package:halasat_cinema_mobile/src/models/post.dart';
+import 'package:halasat_cinema_mobile/src/models/post_list.dart';
+import 'package:halasat_cinema_mobile/src/services/post.dart';
+import 'package:halasat_cinema_mobile/src/widgets/post_card.dart';
+
+
 
 class PostPage extends StatefulWidget {
   PostPage({Key key, @required this.postListItem}) : super(key: key);

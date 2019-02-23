@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'post_page.dart';
-import '../models/post_list.dart';
-import '../models/post.dart';
-import '../services/vodu.dart';
-import '../widgets/post_card.dart';
+import 'package:halasat_cinema_mobile/src/models/post.dart';
+import 'package:halasat_cinema_mobile/src/models/post_list.dart';
+import 'package:halasat_cinema_mobile/src/services/post.dart';
+import 'package:halasat_cinema_mobile/src/widgets/post_card.dart';
+import 'package:halasat_cinema_mobile/src/pages/post_page.dart';
+
+
 
 class App extends StatelessWidget {
   final Future<Post> post = fetchPost(21);

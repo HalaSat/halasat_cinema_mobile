@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'src/pages/app.dart';
+import 'package:halasat_cinema_mobile/src/pages/app.dart';
 
 void main() => runApp(MyApp());
 
