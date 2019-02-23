@@ -5,11 +5,11 @@ import '../models/serializers.dart';
 import '../models/featured.dart';
 import '../const.dart';
 
-const String kSuffix = '/api/list/featured';
+const String kSuffix = '/api/featured';
 
 Future<Featured> fetchFeatured() async {
   final Map<String, dynamic> data = await fetch(
-    voduApiPrefix,
+    kVoduApiPrefix,
     kSuffix,
   );
   final Featured movieList =

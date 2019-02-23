@@ -10,8 +10,6 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(Episode.serializer)
       ..add(Featured.serializer)
       ..add(FeaturedItem.serializer)
-      ..add(Movie.serializer)
-      ..add(Other.serializer)
       ..add(Post.serializer)
       ..add(PostList.serializer)
       ..add(PostListItem.serializer)
@@ -23,11 +21,11 @@ Serializers _$serializers = (new Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(FeaturedItem)]),
           () => new ListBuilder<FeaturedItem>())
       ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType(Movie)]),
-          () => new ListBuilder<Movie>())
+          const FullType(BuiltList, const [const FullType(PostListItem)]),
+          () => new ListBuilder<PostListItem>())
       ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType(Other)]),
-          () => new ListBuilder<Other>())
+          const FullType(BuiltList, const [const FullType(PostListItem)]),
+          () => new ListBuilder<PostListItem>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(PostListItem)]),
           () => new ListBuilder<PostListItem>()))

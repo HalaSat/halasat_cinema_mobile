@@ -7,7 +7,7 @@ import '../const.dart';
 
 Future<List<Category>> fetchCategories() async {
   final List<Map<String, dynamic>> data = await fetch(
-    voduApiPrefix,
+    kVoduApiPrefix,
     '/api/categories',
   );
   final List<Category> categories = data

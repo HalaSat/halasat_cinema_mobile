@@ -68,53 +68,30 @@ class _$PostListItemSerializer implements StructuredSerializer<PostListItem> {
   @override
   Iterable serialize(Serializers serializers, PostListItem object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(String)));
-    }
-    if (object.title != null) {
-      result
-        ..add('title')
-        ..add(serializers.serialize(object.title,
-            specifiedType: const FullType(String)));
-    }
-    if (object.story != null) {
-      result
-        ..add('story')
-        ..add(serializers.serialize(object.story,
-            specifiedType: const FullType(String)));
-    }
-    if (object.poster != null) {
-      result
-        ..add('poster')
-        ..add(serializers.serialize(object.poster,
-            specifiedType: const FullType(String)));
-    }
-    if (object.type != null) {
-      result
-        ..add('type')
-        ..add(serializers.serialize(object.type,
-            specifiedType: const FullType(String)));
-    }
-    if (object.year != null) {
-      result
-        ..add('year')
-        ..add(serializers.serialize(object.year,
-            specifiedType: const FullType(String)));
-    }
+    final result = <Object>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(String)),
+      'title',
+      serializers.serialize(object.title,
+          specifiedType: const FullType(String)),
+      'story',
+      serializers.serialize(object.story,
+          specifiedType: const FullType(String)),
+      'poster',
+      serializers.serialize(object.poster,
+          specifiedType: const FullType(String)),
+      'type',
+      serializers.serialize(object.type, specifiedType: const FullType(String)),
+      'year',
+      serializers.serialize(object.year, specifiedType: const FullType(String)),
+      'imdbrate',
+      serializers.serialize(object.imdbrate,
+          specifiedType: const FullType(String)),
+    ];
     if (object.views != null) {
       result
         ..add('views')
         ..add(serializers.serialize(object.views,
-            specifiedType: const FullType(String)));
-    }
-    if (object.imdbrate != null) {
-      result
-        ..add('imdbrate')
-        ..add(serializers.serialize(object.imdbrate,
             specifiedType: const FullType(String)));
     }
     if (object.mpr != null) {
@@ -163,6 +140,12 @@ class _$PostListItemSerializer implements StructuredSerializer<PostListItem> {
       result
         ..add('director')
         ..add(serializers.serialize(object.director,
+            specifiedType: const FullType(String)));
+    }
+    if (object.genre != null) {
+      result
+        ..add('genre')
+        ..add(serializers.serialize(object.genre,
             specifiedType: const FullType(String)));
     }
 
@@ -242,6 +225,10 @@ class _$PostListItemSerializer implements StructuredSerializer<PostListItem> {
           break;
         case 'director':
           result.director = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'genre':
+          result.genre = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
       }
@@ -386,6 +373,8 @@ class _$PostListItem extends PostListItem {
   final String cast;
   @override
   final String director;
+  @override
+  final String genre;
 
   factory _$PostListItem([void updates(PostListItemBuilder b)]) =>
       (new PostListItemBuilder()..update(updates)).build();
@@ -406,8 +395,31 @@ class _$PostListItem extends PostListItem {
       this.url,
       this.background,
       this.cast,
-      this.director})
-      : super._();
+      this.director,
+      this.genre})
+      : super._() {
+    if (id == null) {
+      throw new BuiltValueNullFieldError('PostListItem', 'id');
+    }
+    if (title == null) {
+      throw new BuiltValueNullFieldError('PostListItem', 'title');
+    }
+    if (story == null) {
+      throw new BuiltValueNullFieldError('PostListItem', 'story');
+    }
+    if (poster == null) {
+      throw new BuiltValueNullFieldError('PostListItem', 'poster');
+    }
+    if (type == null) {
+      throw new BuiltValueNullFieldError('PostListItem', 'type');
+    }
+    if (year == null) {
+      throw new BuiltValueNullFieldError('PostListItem', 'year');
+    }
+    if (imdbrate == null) {
+      throw new BuiltValueNullFieldError('PostListItem', 'imdbrate');
+    }
+  }
 
   @override
   PostListItem rebuild(void updates(PostListItemBuilder b)) =>
@@ -435,7 +447,8 @@ class _$PostListItem extends PostListItem {
         url == other.url &&
         background == other.background &&
         cast == other.cast &&
-        director == other.director;
+        director == other.director &&
+        genre == other.genre;
   }
 
   @override
@@ -455,23 +468,25 @@ class _$PostListItem extends PostListItem {
                                                     $jc(
                                                         $jc(
                                                             $jc(
-                                                                $jc(0,
-                                                                    id.hashCode),
-                                                                title.hashCode),
-                                                            story.hashCode),
-                                                        poster.hashCode),
-                                                    type.hashCode),
-                                                year.hashCode),
-                                            views.hashCode),
-                                        imdbrate.hashCode),
-                                    mpr.hashCode),
-                                seasons.hashCode),
-                            category.hashCode),
-                        serverip.hashCode),
-                    url.hashCode),
-                background.hashCode),
-            cast.hashCode),
-        director.hashCode));
+                                                                $jc(
+                                                                    $jc(0,
+                                                                        id.hashCode),
+                                                                    title.hashCode),
+                                                                story.hashCode),
+                                                            poster.hashCode),
+                                                        type.hashCode),
+                                                    year.hashCode),
+                                                views.hashCode),
+                                            imdbrate.hashCode),
+                                        mpr.hashCode),
+                                    seasons.hashCode),
+                                category.hashCode),
+                            serverip.hashCode),
+                        url.hashCode),
+                    background.hashCode),
+                cast.hashCode),
+            director.hashCode),
+        genre.hashCode));
   }
 
   @override
@@ -492,7 +507,8 @@ class _$PostListItem extends PostListItem {
           ..add('url', url)
           ..add('background', background)
           ..add('cast', cast)
-          ..add('director', director))
+          ..add('director', director)
+          ..add('genre', genre))
         .toString();
   }
 }
@@ -565,6 +581,10 @@ class PostListItemBuilder
   String get director => _$this._director;
   set director(String director) => _$this._director = director;
 
+  String _genre;
+  String get genre => _$this._genre;
+  set genre(String genre) => _$this._genre = genre;
+
   PostListItemBuilder();
 
   PostListItemBuilder get _$this {
@@ -585,6 +605,7 @@ class PostListItemBuilder
       _background = _$v.background;
       _cast = _$v.cast;
       _director = _$v.director;
+      _genre = _$v.genre;
       _$v = null;
     }
     return this;
@@ -622,7 +643,8 @@ class PostListItemBuilder
             url: url,
             background: background,
             cast: cast,
-            director: director);
+            director: director,
+            genre: genre);
     replace(_$result);
     return _$result;
   }

@@ -7,7 +7,7 @@ import '../const.dart';
 
 Future<List<Season>> fetchSeries(int id) async {
   final List<dynamic> data = await fetch(
-    voduApiPrefix,
+    kVoduApiPrefix,
     '/api/seasonsv3/$id',
   );
 

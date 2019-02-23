@@ -7,7 +7,7 @@ import '../const.dart';
 
 Future<PostList> fetchPostList(int page) async {
   final Map<String, dynamic> data = await fetch(
-    voduApiPrefix,
+    kVoduApiPrefix,
     '/api/list/page/$page',
   );
   final PostList movieList =

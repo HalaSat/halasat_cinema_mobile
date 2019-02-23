@@ -8,7 +8,7 @@ import '../const.dart';
 
 Future<PostList> searchPost(String query, int page) async {
   final Map<String, dynamic> data = await fetch(
-    voduApiPrefix,
+    kVoduApiPrefix,
     '/api/list/search/$query/$page',
   );
 

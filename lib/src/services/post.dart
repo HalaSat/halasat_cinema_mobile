@@ -7,7 +7,7 @@ import '../const.dart';
 
 Future<Post> fetchPost(int id) async {
   final Map<String, dynamic> data = await fetch(
-    voduApiPrefix,
+    kVoduApiPrefix,
     '/api/post/$id',
   );
   final Post post = serializers.deserializeWith(Post.serializer, data);

@@ -19,21 +19,14 @@ abstract class PostListItem
     implements Built<PostListItem, PostListItemBuilder> {
   static Serializer<PostListItem> get serializer => _$postListItemSerializer;
 
-  @nullable
   String get id;
-  @nullable
   String get title;
-  @nullable
   String get story;
-  @nullable
   String get poster;
-  @nullable
   String get type;
-  @nullable
   String get year;
   @nullable
   String get views;
-  @nullable
   String get imdbrate;
   @nullable
   String get mpr;
@@ -51,6 +44,9 @@ abstract class PostListItem
   String get cast;
   @nullable
   String get director;
+  // Only the post -> other has a genre field
+  @nullable
+  String get genre;
 
   PostListItem._();
 
