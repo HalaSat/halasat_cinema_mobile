@@ -58,7 +58,7 @@ class _PostPageState extends State<PostPage> {
                       return PostCard(
                         postListItem: other,
                         onPress: () {
-                          Navigator.of(context).pushReplacement(
+                          Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) =>
                                   PostPage(postListItem: other),

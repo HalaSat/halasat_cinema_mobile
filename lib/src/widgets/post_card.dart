@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:halasat_cinema_mobile/src/models/post_list.dart';
 
 // CONSTANTS
-const int kTitleMaxLength = 16;
-const int kGenreMaxLength = 13;
+const int kTitleMaxLength = 12;
+const int kCategoryMaxLength = 14;
 
 typedef void OnTapCallback();
 
@@ -16,17 +16,17 @@ class PostCard extends StatelessWidget {
 
   final PostListItem postListItem;
   final OnTapCallback onPress;
-  
+
   @override
   Widget build(BuildContext context) {
     final String title = postListItem.title.length > kTitleMaxLength
         ? postListItem.title.split('').sublist(0, kTitleMaxLength).join() +
             '...'
         : postListItem.title;
-    final String genre = postListItem.genre.length > kGenreMaxLength
-        ? postListItem.genre.split('').sublist(0, kGenreMaxLength).join() +
+    final String category = postListItem.category.length > kCategoryMaxLength
+        ? postListItem.category.split('').sublist(0, kCategoryMaxLength).join() +
             '...'
-        : postListItem.genre;
+        : postListItem.category;
 
     return Container(
       width: 150.0,
@@ -39,8 +39,8 @@ class PostCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   _buildPoster(context),
-                  _buildTitle(context, title),
-                  _buildBottomInfo(context, genre),
+                  _buildTopInfo(context, title),
+                  _buildBottomInfo(context, category),
                 ],
               ),
             ),
@@ -56,46 +56,61 @@ class PostCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(10.0),
       child: FadeInImage(
         height: 240.5,
-        fit:BoxFit.cover,
+        fit: BoxFit.cover,
         image: NetworkImage(postListItem.poster),
         placeholder: AssetImage('assets/post-placeholder.png'),
       ),
     );
   }
 
-  Widget _buildTitle(BuildContext context, String title) {
+  Widget _buildTopInfo(BuildContext context, String title) {
     return Container(
       padding: const EdgeInsets.only(top: 3.0),
-      child: Text(
-        title,
-        textAlign: TextAlign.start,
-        style: Theme.of(context).textTheme.body2,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            title,
+            textAlign: TextAlign.start,
+            style: Theme.of(context).textTheme.body2,
+          ),
+          Text(
+            postListItem.year,
+            style: Theme.of(context).textTheme.caption,
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildBottomInfo(BuildContext context, String genre) {
+  Widget _buildBottomInfo(BuildContext context, String category) {
+    TextStyle textStyle = Theme.of(context).textTheme.caption;
+
     return Padding(
       padding: const EdgeInsets.only(top: 3.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Expanded(
-              child: Text(
-            genre,
-            style: Theme.of(context).textTheme.caption,
-          )),
-          Padding(
-            padding: const EdgeInsets.only(right: 2.0),
-            child: Icon(
-              Icons.star,
-              size: Theme.of(context).textTheme.caption.fontSize,
-              color: Colors.orange,
-            ),
-          ),
           Text(
-            postListItem.imdbrate,
-            style: Theme.of(context).textTheme.caption,
+            category,
+            style: textStyle,
           ),
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 2.0),
+                child: Icon(
+                  Icons.star,
+                  size: textStyle.fontSize,
+                  color: Colors.orange,
+                ),
+              ),
+              Text(
+                postListItem.imdbrate,
+                style: textStyle,
+              ),
+            ],
+          )
         ],
       ),
     );
