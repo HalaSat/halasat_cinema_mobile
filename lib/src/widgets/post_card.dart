@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:halasat_cinema_mobile/src/models/post_list.dart';
 
 // CONSTANTS
-const int kTitleMaxLength = 12;
+const int kTitleMaxLength = 9;
 const int kCategoryMaxLength = 14;
 
 typedef void OnTapCallback();
