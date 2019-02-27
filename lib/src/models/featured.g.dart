@@ -20,8 +20,8 @@ class _$FeaturedSerializer implements StructuredSerializer<Featured> {
   Iterable serialize(Serializers serializers, Featured object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
-      'featuredItems',
-      serializers.serialize(object.featuredItems,
+      'featured',
+      serializers.serialize(object.featured,
           specifiedType:
               const FullType(BuiltList, const [const FullType(FeaturedItem)])),
     ];
@@ -40,8 +40,8 @@ class _$FeaturedSerializer implements StructuredSerializer<Featured> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
-        case 'featuredItems':
-          result.featuredItems.replace(serializers.deserialize(value,
+        case 'featured':
+          result.featured.replace(serializers.deserialize(value,
                   specifiedType: const FullType(
                       BuiltList, const [const FullType(FeaturedItem)]))
               as BuiltList);
@@ -117,14 +117,14 @@ class _$FeaturedItemSerializer implements StructuredSerializer<FeaturedItem> {
 
 class _$Featured extends Featured {
   @override
-  final BuiltList<FeaturedItem> featuredItems;
+  final BuiltList<FeaturedItem> featured;
 
   factory _$Featured([void updates(FeaturedBuilder b)]) =>
       (new FeaturedBuilder()..update(updates)).build();
 
-  _$Featured._({this.featuredItems}) : super._() {
-    if (featuredItems == null) {
-      throw new BuiltValueNullFieldError('Featured', 'featuredItems');
+  _$Featured._({this.featured}) : super._() {
+    if (featured == null) {
+      throw new BuiltValueNullFieldError('Featured', 'featured');
     }
   }
 
@@ -138,18 +138,17 @@ class _$Featured extends Featured {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Featured && featuredItems == other.featuredItems;
+    return other is Featured && featured == other.featured;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, featuredItems.hashCode));
+    return $jf($jc(0, featured.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('Featured')
-          ..add('featuredItems', featuredItems))
+    return (newBuiltValueToStringHelper('Featured')..add('featured', featured))
         .toString();
   }
 }
@@ -157,17 +156,17 @@ class _$Featured extends Featured {
 class FeaturedBuilder implements Builder<Featured, FeaturedBuilder> {
   _$Featured _$v;
 
-  ListBuilder<FeaturedItem> _featuredItems;
-  ListBuilder<FeaturedItem> get featuredItems =>
-      _$this._featuredItems ??= new ListBuilder<FeaturedItem>();
-  set featuredItems(ListBuilder<FeaturedItem> featuredItems) =>
-      _$this._featuredItems = featuredItems;
+  ListBuilder<FeaturedItem> _featured;
+  ListBuilder<FeaturedItem> get featured =>
+      _$this._featured ??= new ListBuilder<FeaturedItem>();
+  set featured(ListBuilder<FeaturedItem> featured) =>
+      _$this._featured = featured;
 
   FeaturedBuilder();
 
   FeaturedBuilder get _$this {
     if (_$v != null) {
-      _featuredItems = _$v.featuredItems?.toBuilder();
+      _featured = _$v.featured?.toBuilder();
       _$v = null;
     }
     return this;
@@ -190,12 +189,12 @@ class FeaturedBuilder implements Builder<Featured, FeaturedBuilder> {
   _$Featured build() {
     _$Featured _$result;
     try {
-      _$result = _$v ?? new _$Featured._(featuredItems: featuredItems.build());
+      _$result = _$v ?? new _$Featured._(featured: featured.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'featuredItems';
-        featuredItems.build();
+        _$failedField = 'featured';
+        featured.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'Featured', _$failedField, e.toString());

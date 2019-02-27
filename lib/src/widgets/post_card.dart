@@ -4,7 +4,7 @@ import 'package:halasat_cinema_mobile/src/models/post_list.dart';
 
 // CONSTANTS
 const int kTitleMaxLength = 9;
-const int kCategoryMaxLength = 14;
+const int kCategoryMaxLength = 12;
 
 typedef void OnTapCallback();
 

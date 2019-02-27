@@ -7,7 +7,7 @@ part 'featured.g.dart';
 abstract class Featured implements Built<Featured, FeaturedBuilder> {
   static Serializer<Featured> get serializer => _$featuredSerializer;
   
-  BuiltList<FeaturedItem> get featuredItems;
+  BuiltList<FeaturedItem> get featured;
 
   Featured._();
 
