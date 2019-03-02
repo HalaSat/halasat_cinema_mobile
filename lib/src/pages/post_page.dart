@@ -6,7 +6,8 @@ import 'package:android_intent/android_intent.dart';
 import 'package:halasat_cinema_mobile/src/const.dart';
 import 'package:halasat_cinema_mobile/src/models/post.dart';
 import 'package:halasat_cinema_mobile/src/models/post_list.dart';
-import 'package:halasat_cinema_mobile/src/services/post.dart';
+import 'package:halasat_cinema_mobile/src/models/season.dart';
+import 'package:halasat_cinema_mobile/src/services/vodu.dart';
 import 'package:halasat_cinema_mobile/src/widgets/post_card.dart';
 
 class PostPage extends StatefulWidget {
@@ -22,11 +23,24 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   Future<Post> post;
+  List<Season> seasons;
 
   @override
   void initState() {
     int id = int.parse(widget.postListItem.id);
+    PostListItem item = widget.postListItem;
+
     post = fetchPost(id);
+
+    if (item.type == '1') {
+      int id = int.parse(item.id);
+      fetchSeries(id).then(
+        (data) => setState(() {
+              seasons = data;
+              print(data);
+            }),
+      );
+    }
 
     super.initState();
   }
@@ -77,7 +91,9 @@ class _PostPageState extends State<PostPage> {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
+                              color: Theme.of(context)
+                                  .scaffoldBackgroundColor
+                                  .withOpacity(0.7),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
@@ -94,40 +110,8 @@ class _PostPageState extends State<PostPage> {
                 SliverList(
                   delegate: SliverChildListDelegate(
                     [
-                      Container(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              movie.title,
-                              style: Theme.of(context).textTheme.title,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 3.0),
-                                  child: Text(
-                                    movie.imdbrate,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle
-                                        .copyWith(color: Colors.grey),
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Theme.of(context).accentColor,
-                                  size: Theme.of(context)
-                                      .textTheme
-                                      .subtitle
-                                      .fontSize,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
+                      _buildTitle(context, movie),
+                      seasons != null ? _buildSeasonList(context) : SizedBox(),
                       ExpansionTile(
                         title: Column(
                           children: <Widget>[
@@ -174,6 +158,40 @@ class _PostPageState extends State<PostPage> {
           }
           return Center(child: CircularProgressIndicator());
         });
+  }
+
+  Container _buildTitle(BuildContext context, PostListItem movie) {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            movie.title,
+            style: Theme.of(context).textTheme.title,
+          ),
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 3.0),
+                child: Text(
+                  movie.imdbrate,
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle
+                      .copyWith(color: Colors.grey),
+                ),
+              ),
+              Icon(
+                Icons.star,
+                color: Theme.of(context).accentColor,
+                size: Theme.of(context).textTheme.subtitle.fontSize,
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 
   Padding _buildInfoList(BuildContext context, PostListItem movie) {
@@ -235,6 +253,12 @@ class _PostPageState extends State<PostPage> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildSeasonList(BuildContext context) {
+    return Column(
+      children: seasons.map((item) => Text(item.title)).toList(),
     );
   }
 }
