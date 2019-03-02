@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -191,9 +193,13 @@ class App extends StatelessWidget {
       ),
       onTap: () async {
         Post res = await fetchPost(int.parse(item.id));
-        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-          return PostPage(postListItem: res.movies[0],);
-        } ));
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (BuildContext context) {
+            return PostPage(
+              postListItem: res.movies[0],
+            );
+          }),
+        );
       },
     );
   }

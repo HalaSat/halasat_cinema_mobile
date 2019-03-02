@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:android_intent/android_intent.dart';
 
@@ -61,20 +63,109 @@ class _PostPageState extends State<PostPage> {
                       DecoratedBox(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [Colors.red.withOpacity(.2), Colors.blue.withOpacity(.3)],
+                            colors: [
+                              Colors.red.withOpacity(.2),
+                              Colors.blue.withOpacity(.3)
+                            ],
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            _launchVideo(movie);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.play_arrow,
+                              size: 80.0,
+                              color: Theme.of(context).accentColor,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  // floating: true,
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate(
                     [
-                      _buildRecommendedRow(context, item),
-                      _buildRecommendedRow(context, item),
-                      _buildRecommendedRow(context, item),
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              movie.title,
+                              style: Theme.of(context).textTheme.title,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 3.0),
+                                  child: Text(
+                                    movie.imdbrate,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle
+                                        .copyWith(color: Colors.grey),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.star,
+                                  color: Theme.of(context).accentColor,
+                                  size: Theme.of(context)
+                                      .textTheme
+                                      .subtitle
+                                      .fontSize,
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      ExpansionTile(
+                        title: Column(
+                          children: <Widget>[
+                            InfoRow(
+                              title: 'Year',
+                              data: movie.year,
+                            ),
+                            InfoRow(
+                              title: 'Story',
+                              data: movie.story,
+                            ),
+                          ],
+                        ),
+                        children: <Widget>[
+                          _buildInfoList(context, movie),
+                        ],
+                      ),
+                      Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(bottom: 5.0),
+                            margin: EdgeInsets.only(bottom: 8.0),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  width: 2.0,
+                                  color: Colors.purple,
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              'Recommended',
+                              style: Theme.of(context).textTheme.body1,
+                            ),
+                          ),
+                          _buildRecommendedRow(context, item),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -85,10 +176,40 @@ class _PostPageState extends State<PostPage> {
         });
   }
 
-  void _launchVideo(String url) {
+  Padding _buildInfoList(BuildContext context, PostListItem movie) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 18.0, right: 18.0),
+      child: Column(
+        children: <Widget>[
+          InfoRow(
+            title: 'Category',
+            data: movie.category,
+          ),
+          InfoRow(
+            title: 'Genre',
+            data: movie.genre,
+          ),
+          InfoRow(
+            title: 'Director',
+            data: movie.director,
+          ),
+          InfoRow(
+            title: 'Cast',
+            data: movie.cast,
+          ),
+          InfoRow(
+            title: 'Rated',
+            data: movie.mpr,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _launchVideo(PostListItem item) {
     AndroidIntent intent = AndroidIntent(
       action: 'action_view',
-      data: Uri.encodeFull(url),
+      data: Uri.encodeFull(item.url),
       package: 'com.mxtech.videoplayer.ad',
     );
     intent.launch();
@@ -113,6 +234,47 @@ class _PostPageState extends State<PostPage> {
             },
           );
         },
+      ),
+    );
+  }
+}
+
+class InfoRow extends StatelessWidget {
+  const InfoRow({
+    Key key,
+    @required this.title,
+    @required this.data,
+    this.bottomPadding = 5.0,
+    this.spaceBetween = 8.0,
+  }) : super(key: key);
+
+  final String title;
+  final String data;
+  final double bottomPadding;
+  final double spaceBetween;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomPadding),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: spaceBetween),
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 12.0,
+                color: Theme.of(context).textTheme.caption.color,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ),
+          Flexible(
+            child: Text(data, style: Theme.of(context).textTheme.body1),
+          ),
+        ],
       ),
     );
   }
