@@ -144,7 +144,7 @@ class App extends StatelessWidget {
   CarouselSlider _buildCarouselSlider(BuildContext context, Featured featured) {
     return CarouselSlider(
       autoPlay: true,
-      height: 250.0,
+      height: 200.0,
       items: featured.featured.map((FeaturedItem item) {
         return Builder(
           builder: (BuildContext context) {
@@ -174,8 +174,8 @@ class App extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: <Color>[
-                    Colors.red.withOpacity(0.9),
-                    Colors.blue.withOpacity(0.5),
+                    Colors.red.withOpacity(0.5),
+                    Colors.blue.withOpacity(0.3),
                   ],
                 ),
               ),

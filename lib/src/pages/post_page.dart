@@ -87,7 +87,7 @@ class _PostPageState extends State<PostPage> {
                       Center(
                         child: GestureDetector(
                           onTap: () {
-                            _launchVideo(movie);
+                            _launchVideo(url: movie.url, title: movie.title);
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -224,18 +224,9 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  void _launchVideo(PostListItem item) {
-    AndroidIntent intent = AndroidIntent(
-      action: 'action_view',
-      data: Uri.encodeFull(item.url),
-      package: 'com.mxtech.videoplayer.ad',
-    );
-    intent.launch();
-  }
-
   Widget _buildRecommendedRow(BuildContext context, Post item) {
     return Container(
-      height: 400.0,
+      height: 310.0,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: item.other.length,
@@ -258,8 +249,36 @@ class _PostPageState extends State<PostPage> {
 
   Widget _buildSeasonList(BuildContext context) {
     return Column(
-      children: seasons.map((item) => Text(item.title)).toList(),
+      children: seasons
+          .map((Season item) => _buildEpisodeList(context, item))
+          .toList(),
     );
+  }
+
+  Widget _buildEpisodeList(BuildContext context, Season season) {
+    return ExpansionTile(
+      title: Text(season.title),
+      children: season.episode.map((Episode episode) {
+        return InkWell(
+          child: ListTile(
+            title: Text(episode.title),
+          ),
+          onTap: () {
+            _launchVideo(url: episode.url, title: episode.title);
+          },
+        );
+      }).toList(),
+    );
+  }
+
+    void _launchVideo({@required url, title = 'Episode'}) {
+    AndroidIntent intent = AndroidIntent(
+      action: 'action_view',
+      data: Uri.encodeFull(url),
+      package: 'com.mxtech.videoplayer.ad',
+      arguments: {'title': title},
+    );
+    intent.launch();
   }
 }
 
