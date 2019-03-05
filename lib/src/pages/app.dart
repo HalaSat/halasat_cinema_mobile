@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:halasat_cinema_mobile/src/const.dart';
+import 'package:halasat_cinema_mobile/src/data/search_mock.dart';
 import 'package:halasat_cinema_mobile/src/models/featured.dart';
 import 'package:halasat_cinema_mobile/src/models/post.dart';
+import 'package:halasat_cinema_mobile/src/models/post_list.dart';
 import 'package:halasat_cinema_mobile/src/pages/post_page.dart';
 import 'package:halasat_cinema_mobile/src/services/featured.dart';
 import 'package:halasat_cinema_mobile/src/services/post.dart';
@@ -85,18 +87,28 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'HalaSat Cinema',
-      // theme: ThemeData(primarySwatch: Colors.red),
-      theme: ThemeData.dark().copyWith(
-        // primaryColor: Colors.red,
-        accentColor: Colors.red,
-      ),
+      theme: ThemeData.dark().copyWith(accentColor: Colors.pink),
       home: Scaffold(
+        appBar: AppBar(
+          title: Text('HalaSat Cinema'),
+          actions: <Widget>[
+            Builder(
+              builder: (context) => IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      showSearch(
+                          context: context, delegate: PostSearchDelegate());
+                    },
+                  ),
+            ),
+          ],
+        ),
+        drawer: Drawer(),
         body: SafeArea(
           bottom: false,
           child: ListView(
             addAutomaticKeepAlives: true,
             children: <Widget>[
-              _buildSearch(context),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: FutureBuilder(
@@ -112,29 +124,6 @@ class App extends StatelessWidget {
                 ),
               ),
             ]..addAll(_postRows),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Padding _buildSearch(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10.0),
-        child: TextField(
-          onTap: () {
-            // TODO: Handle search
-          },
-          maxLines: 1,
-          decoration: InputDecoration(
-            prefixIcon: Icon(Icons.search),
-            filled: true,
-            contentPadding: EdgeInsets.only(top: 14.0),
-            hintText: 'Search movies, tv shows...etc.',
-            border: InputBorder.none,
-            // fillColor: Colors.grey.shade200,
           ),
         ),
       ),
@@ -201,6 +190,61 @@ class App extends StatelessWidget {
           }),
         );
       },
+    );
+  }
+}
+
+class PostSearchDelegate extends SearchDelegate<String> {
+  final List<PostListItem> posts = searchList.posts.toList();
+
+  final List<PostListItem> recentPosts =
+      searchList.posts.sublist(4, 12).toList();
+
+  @override
+  ThemeData appBarTheme(BuildContext context) {
+    return Theme.of(context);
+  }
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: AnimatedIcon(
+        icon: AnimatedIcons.menu_arrow,
+        progress: transitionAnimation,
+      ),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return null;
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final suggestionList = query.isEmpty ? recentPosts : posts;
+
+    return ListView.builder(
+      itemCount: suggestionList.length,
+      itemBuilder: (context, index) => ListTile(
+            leading: Icon(Icons.movie),
+            title: Text(suggestionList[index].title),
+          ),
     );
   }
 }

@@ -264,19 +264,28 @@ class _PostPageState extends State<PostPage> {
             title: Text(episode.title),
           ),
           onTap: () {
-            _launchVideo(url: episode.url, title: episode.title);
+            _launchVideo(
+              url: episode.url360,
+              title: widget.postListItem.title + ' ' + episode.title,
+              subtitles: episode.subtitle,
+            );
           },
         );
       }).toList(),
     );
   }
 
-    void _launchVideo({@required url, title = 'Episode'}) {
+  void _launchVideo({@required url, title = 'Episode', subtitles}) {
     AndroidIntent intent = AndroidIntent(
       action: 'action_view',
       data: Uri.encodeFull(url),
       package: 'com.mxtech.videoplayer.ad',
-      arguments: {'title': title},
+      arguments: {
+        'title': title,
+        // 'subs': [Uri.encodeFull(subtitles)],
+        // 'subs.name': 'sub',
+        // 'subs.enable': [Uri.encodeFull(subtitles)],
+      },
     );
     intent.launch();
   }
