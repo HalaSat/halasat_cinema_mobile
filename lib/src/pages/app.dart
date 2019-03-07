@@ -12,6 +12,7 @@ import 'package:halasat_cinema_mobile/src/pages/post_page.dart';
 import 'package:halasat_cinema_mobile/src/services/featured.dart';
 import 'package:halasat_cinema_mobile/src/services/post.dart';
 import 'package:halasat_cinema_mobile/src/services/post_list_category.dart';
+import 'package:halasat_cinema_mobile/src/services/search.dart';
 import 'package:halasat_cinema_mobile/src/widgets/post_row.dart';
 
 class App extends StatelessWidget {
@@ -232,19 +233,83 @@ class PostSearchDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return null;
+    return FutureBuilder(
+      future: searchPost(query),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          PostList postList = snapshot.data;
+          print(postList);
+          return ListView.builder(
+            itemCount: postList.posts.length,
+            itemBuilder: (context, index) {
+              PostListItem post = postList.posts[index];
+
+              return Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: InkWell(
+                  child: Row(
+                    children: <Widget>[
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: FadeInImage(
+                          height: 240.5,
+                          fit: BoxFit.cover,
+                          image: NetworkImage(post.poster),
+                          placeholder: AssetImage('assets/post-placeholder.png'),
+                        ),
+                      ),
+                      Container(
+                        // padding: const EdgeInsets.only(top: 3.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              post.title,
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context).textTheme.body2,
+                            ),
+                            Text(
+                              post.year,
+                              style: Theme.of(context).textTheme.caption,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  onTap: () {},
+                ),
+              );
+            },
+          );
+        }
+        return Center(child: CircularProgressIndicator());
+      },
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     final suggestionList = query.isEmpty ? recentPosts : posts;
+    return FutureBuilder(
+      future: searchPost(query),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          PostList postList = snapshot.data;
 
-    return ListView.builder(
-      itemCount: suggestionList.length,
-      itemBuilder: (context, index) => ListTile(
-            leading: Icon(Icons.movie),
-            title: Text(suggestionList[index].title),
-          ),
+          return ListView.builder(
+            itemCount: postList.posts.length,
+            itemBuilder: (context, index) => ListTile(
+                  leading: Icon(
+                    postList.posts[index].type == '0' ? Icons.movie : Icons.tv,
+                  ),
+                  title: Text(postList.posts[index].title),
+                  onTap: () {},
+                ),
+          );
+        }
+        return Center(child: CircularProgressIndicator());
+      },
     );
   }
 }

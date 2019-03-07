@@ -259,10 +259,8 @@ class _PostPageState extends State<PostPage> {
     return ExpansionTile(
       title: Text(season.title),
       children: season.episode.map((Episode episode) {
-        return InkWell(
-          child: ListTile(
-            title: Text(episode.title),
-          ),
+        return ListTile(
+          title: Text(episode.title),
           onTap: () {
             _launchVideo(
               url: episode.url360,
