@@ -234,7 +234,7 @@ class PostSearchDelegate extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     return FutureBuilder(
-      future: searchPost(query),
+      future: searchPost(query, ''),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           PostList postList = snapshot.data;
@@ -290,9 +290,9 @@ class PostSearchDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestionList = query.isEmpty ? recentPosts : posts;
+    final Future<PostList> posts = query.isEmpty ? searchPost(query, '/page') : searchPost(query, '');
     return FutureBuilder(
-      future: searchPost(query),
+      future: posts,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           PostList postList = snapshot.data;
