@@ -165,10 +165,14 @@ class _PostPageState extends State<PostPage> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            movie.title,
-            style: Theme.of(context).textTheme.title,
+          Container(
+            width: MediaQuery.of(context).size.width - 80.0,
+            child: Text(
+              movie.title,
+              style: Theme.of(context).textTheme.title,
+            ),
           ),
           Row(
             children: <Widget>[

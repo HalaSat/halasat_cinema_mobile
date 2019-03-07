@@ -238,7 +238,6 @@ class PostSearchDelegate extends SearchDelegate<String> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           PostList postList = snapshot.data;
-          print(postList);
           return ListView.builder(
             itemCount: postList.posts.length,
             itemBuilder: (context, index) {
@@ -247,37 +246,70 @@ class PostSearchDelegate extends SearchDelegate<String> {
               return Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: InkWell(
-                  child: Row(
-                    children: <Widget>[
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: FadeInImage(
-                          height: 240.5,
-                          fit: BoxFit.cover,
-                          image: NetworkImage(post.poster),
-                          placeholder: AssetImage('assets/post-placeholder.png'),
+                  child: Container(
+                    height: 240.5,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: FadeInImage(
+                            height: 240.5,
+                            fit: BoxFit.cover,
+                            image: NetworkImage(post.poster),
+                            placeholder:
+                                AssetImage('assets/post-placeholder.png'),
+                          ),
                         ),
-                      ),
-                      Container(
-                        // padding: const EdgeInsets.only(top: 3.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              post.title,
-                              textAlign: TextAlign.start,
-                              style: Theme.of(context).textTheme.body2,
+                        Container(
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 10.0),
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  post.title,
+                                  textAlign: TextAlign.start,
+                                  style: Theme.of(context).textTheme.body2,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      post.year,
+                                      style: Theme.of(context).textTheme.caption,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          post.imdbrate,
+                                          style:
+                                              Theme.of(context).textTheme.caption,
+                                        ),
+                                        Icon(
+                                          Icons.star,
+                                          size: Theme.of(context)
+                                              .textTheme
+                                              .caption
+                                              .fontSize,
+                                          color: Theme.of(context).accentColor,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Container(child: Text(post.story),)
+                              ],
                             ),
-                            Text(
-                              post.year,
-                              style: Theme.of(context).textTheme.caption,
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  onTap: () {},
+                  onTap: () => _goToPostPage(context, post),
                 ),
               );
             },
@@ -290,7 +322,8 @@ class PostSearchDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final Future<PostList> posts = query.isEmpty ? searchPost(query, '/page') : searchPost(query, '');
+    final Future<PostList> posts =
+        query.isEmpty ? searchPost(query, '/page') : searchPost(query, '');
     return FutureBuilder(
       future: posts,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -299,17 +332,28 @@ class PostSearchDelegate extends SearchDelegate<String> {
 
           return ListView.builder(
             itemCount: postList.posts.length,
-            itemBuilder: (context, index) => ListTile(
-                  leading: Icon(
-                    postList.posts[index].type == '0' ? Icons.movie : Icons.tv,
-                  ),
-                  title: Text(postList.posts[index].title),
-                  onTap: () {},
+            itemBuilder: (context, index) {
+              PostListItem post = postList.posts[index];
+
+              return ListTile(
+                leading: Icon(
+                  post.type == '0' ? Icons.movie : Icons.tv,
                 ),
+                title: Text(post.title),
+                onTap: () => _goToPostPage(context, post),
+              );
+            },
           );
         }
         return Center(child: CircularProgressIndicator());
       },
     );
   }
+
+  void _goToPostPage(context, PostListItem post) => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => PostPage(postListItem: post),
+        ),
+      );
 }
