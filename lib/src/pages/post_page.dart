@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:android_intent/android_intent.dart';
+import 'package:flutter_appavailability/flutter_appavailability.dart';
 
 import 'package:halasat_cinema_mobile/src/const.dart';
 import 'package:halasat_cinema_mobile/src/models/post.dart';
@@ -47,6 +48,8 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
+    _checkMXIsAvailable(context);
+
     return Scaffold(
       body: _buildBody(context),
     );
@@ -54,110 +57,150 @@ class _PostPageState extends State<PostPage> {
 
   Widget _buildBody(BuildContext context) {
     return FutureBuilder(
-        future: post,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            final Post item = snapshot.data;
-            final PostListItem movie = item.movies[0];
+      future: post,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          final Post item = snapshot.data;
+          final PostListItem movie = item.movies[0];
 
-            return CustomScrollView(
-              slivers: <Widget>[
-                SliverAppBar(
-                  expandedHeight: 250.0,
-                  flexibleSpace: Stack(
-                    fit: StackFit.expand,
-                    children: <Widget>[
-                      FadeInImage(
-                        height: 300,
-                        fit: BoxFit.cover,
-                        image: NetworkImage('$kVoduBase/${movie.background}'),
-                        placeholder:
-                            AssetImage('assets/featured-placeholder.jpg'),
-                      ),
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.red.withOpacity(.2),
-                              Colors.blue.withOpacity(.3)
-                            ],
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            _launchVideo(url: movie.url, title: movie.title);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .scaffoldBackgroundColor
-                                  .withOpacity(0.7),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.play_arrow,
-                              size: 80.0,
-                              color: Theme.of(context).accentColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      _buildTitle(context, movie),
-                      seasons != null ? _buildSeasonList(context) : SizedBox(),
-                      ExpansionTile(
-                        title: Column(
-                          children: <Widget>[
-                            InfoRow(
-                              title: 'Year',
-                              data: movie.year,
-                            ),
-                            InfoRow(
-                              title: 'Story',
-                              data: movie.story,
-                            ),
+          return CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                expandedHeight: 250.0,
+                flexibleSpace: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    FadeInImage(
+                      height: 300,
+                      fit: BoxFit.cover,
+                      image: NetworkImage('$kVoduBase/${movie.background}'),
+                      placeholder:
+                          AssetImage('assets/featured-placeholder.jpg'),
+                    ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.red.withOpacity(.2),
+                            Colors.blue.withOpacity(.3)
                           ],
                         ),
+                      ),
+                    ),
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          final String url = movie.url.isEmpty
+                              ? movie.url360.isEmpty
+                                  ? movie.url720
+                                  : movie.url360
+                              : movie.url;
+
+                          _launchVideo(
+                              url: url,
+                              title: movie.title,
+                              subtitle: movie.srt);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .scaffoldBackgroundColor
+                                .withOpacity(0.7),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.play_arrow,
+                            size: 80.0,
+                            color: Theme.of(context).accentColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    _buildTitle(context, movie),
+                    ExpansionTile(
+                      title: Column(
                         children: <Widget>[
-                          _buildInfoList(context, movie),
+                          InfoRow(
+                            title: 'Story',
+                            data: movie.story,
+                          ),
                         ],
                       ),
-                      Column(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.only(bottom: 5.0),
-                            margin: EdgeInsets.only(bottom: 8.0),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  width: 2.0,
-                                  color: Colors.purple,
-                                ),
+                      children: <Widget>[
+                        _buildInfoList(context, movie),
+                      ],
+                    ),
+                    seasons != null ? _buildSeasonList(context) : SizedBox(),
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(bottom: 5.0),
+                          margin: EdgeInsets.only(bottom: 8.0),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                width: 2.0,
+                                color: Colors.purple,
                               ),
                             ),
-                            child: Text(
-                              'Recommended',
-                              style: Theme.of(context).textTheme.body1,
-                            ),
                           ),
-                          _buildRecommendedRow(context, item),
-                        ],
-                      ),
-                    ],
-                  ),
+                          child: Text(
+                            'Recommended',
+                            style: Theme.of(context).textTheme.body1,
+                          ),
+                        ),
+                        _buildRecommendedRow(context, item),
+                      ],
+                    ),
+                  ],
                 ),
+              ),
+            ],
+          );
+        }
+        return Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+
+  Future<void> _checkMXIsAvailable(BuildContext context) async {
+    try {
+      await AppAvailability.checkAvailability(kMXPlayer);
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text('MX Player is required!'),
+              content: Text('Do you want to install MX Player?'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('CANCEL'),
+                  textColor: Theme.of(context).textTheme.body1.color,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                RaisedButton(
+                  child: Text('INSTALL'),
+                  textColor: Theme.of(context).textTheme.body1.color,
+                  onPressed: () {
+                    AndroidIntent intent = AndroidIntent(
+                      action: 'action_view',
+                      data: Uri.encodeFull('market://details?id=' + kMXPlayer),
+                    );
+                    intent.launch();
+                  },
+                )
               ],
-            );
-          }
-          return Center(child: CircularProgressIndicator());
-        });
+            ),
+      );
+    }
   }
 
   Container _buildTitle(BuildContext context, PostListItem movie) {
@@ -203,6 +246,10 @@ class _PostPageState extends State<PostPage> {
       padding: const EdgeInsets.only(left: 18.0, right: 18.0),
       child: Column(
         children: <Widget>[
+          InfoRow(
+            title: 'Year',
+            data: movie.year,
+          ),
           InfoRow(
             title: 'Category',
             data: movie.category,
@@ -266,10 +313,13 @@ class _PostPageState extends State<PostPage> {
         return ListTile(
           title: Text(episode.title),
           onTap: () {
+            final String url = episode.url.isEmpty
+                ? episode.url360.isEmpty ? episode.url720 : episode.url360
+                : episode.url;
+
             _launchVideo(
-              url: episode.url360,
+              url: url,
               title: widget.postListItem.title + ' ' + episode.title,
-              subtitles: episode.subtitle,
             );
           },
         );
@@ -277,18 +327,21 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  void _launchVideo({@required url, title = 'Episode', subtitles}) {
+  void _launchVideo(
+      {@required String url, String title = 'Episode', String subtitle}) {
     AndroidIntent intent = AndroidIntent(
       action: 'action_view',
       data: Uri.encodeFull(url),
-      package: 'com.mxtech.videoplayer.ad',
+      package: kMXPlayer,
       arguments: {
         'title': title,
-        // 'subs': [Uri.encodeFull(subtitles)],
-        // 'subs.name': 'sub',
-        // 'subs.enable': [Uri.encodeFull(subtitles)],
+        'subs': [Uri.encodeFull(subtitle)],
+        'subs.enable': [Uri.encodeFull(subtitle)],
+        'subs.name': [subtitle]
       },
     );
+    print('this is the url: $url');
+    print('this is the title: $title');
     intent.launch();
   }
 }

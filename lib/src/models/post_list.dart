@@ -39,6 +39,10 @@ abstract class PostListItem
   @nullable
   String get url;
   @nullable
+  String get url360;
+  @nullable
+  String get url720;
+  @nullable
   String get background;
   @nullable
   String get cast;
@@ -47,6 +51,9 @@ abstract class PostListItem
   // Only the post -> other has a genre field
   @nullable
   String get genre;
+  // Only post -> movies has a srt field
+  @nullable
+  String get srt;
 
   PostListItem._();
 

@@ -20,6 +20,7 @@ dependencies:
   android_intent: ^0.3.0+1
   incrementally_loading_listview: ^0.0.4+3
   carousel_slider: ^1.1.0
+  flutter_appavailability: ^0.0.21
 
 dev_dependencies:
   flutter_test:
@@ -30,8 +31,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  
+
   assets:
     - assets/post-placeholder.png
     - assets/featured-placeholder.jpg
-  

@@ -124,6 +124,18 @@ class _$PostListItemSerializer implements StructuredSerializer<PostListItem> {
         ..add(serializers.serialize(object.url,
             specifiedType: const FullType(String)));
     }
+    if (object.url360 != null) {
+      result
+        ..add('url360')
+        ..add(serializers.serialize(object.url360,
+            specifiedType: const FullType(String)));
+    }
+    if (object.url720 != null) {
+      result
+        ..add('url720')
+        ..add(serializers.serialize(object.url720,
+            specifiedType: const FullType(String)));
+    }
     if (object.background != null) {
       result
         ..add('background')
@@ -146,6 +158,12 @@ class _$PostListItemSerializer implements StructuredSerializer<PostListItem> {
       result
         ..add('genre')
         ..add(serializers.serialize(object.genre,
+            specifiedType: const FullType(String)));
+    }
+    if (object.srt != null) {
+      result
+        ..add('srt')
+        ..add(serializers.serialize(object.srt,
             specifiedType: const FullType(String)));
     }
 
@@ -215,6 +233,14 @@ class _$PostListItemSerializer implements StructuredSerializer<PostListItem> {
           result.url = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'url360':
+          result.url360 = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'url720':
+          result.url720 = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
         case 'background':
           result.background = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
@@ -229,6 +255,10 @@ class _$PostListItemSerializer implements StructuredSerializer<PostListItem> {
           break;
         case 'genre':
           result.genre = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'srt':
+          result.srt = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
       }
@@ -368,6 +398,10 @@ class _$PostListItem extends PostListItem {
   @override
   final String url;
   @override
+  final String url360;
+  @override
+  final String url720;
+  @override
   final String background;
   @override
   final String cast;
@@ -375,6 +409,8 @@ class _$PostListItem extends PostListItem {
   final String director;
   @override
   final String genre;
+  @override
+  final String srt;
 
   factory _$PostListItem([void updates(PostListItemBuilder b)]) =>
       (new PostListItemBuilder()..update(updates)).build();
@@ -393,10 +429,13 @@ class _$PostListItem extends PostListItem {
       this.category,
       this.serverip,
       this.url,
+      this.url360,
+      this.url720,
       this.background,
       this.cast,
       this.director,
-      this.genre})
+      this.genre,
+      this.srt})
       : super._() {
     if (id == null) {
       throw new BuiltValueNullFieldError('PostListItem', 'id');
@@ -445,10 +484,13 @@ class _$PostListItem extends PostListItem {
         category == other.category &&
         serverip == other.serverip &&
         url == other.url &&
+        url360 == other.url360 &&
+        url720 == other.url720 &&
         background == other.background &&
         cast == other.cast &&
         director == other.director &&
-        genre == other.genre;
+        genre == other.genre &&
+        srt == other.srt;
   }
 
   @override
@@ -469,24 +511,28 @@ class _$PostListItem extends PostListItem {
                                                         $jc(
                                                             $jc(
                                                                 $jc(
-                                                                    $jc(0,
-                                                                        id.hashCode),
-                                                                    title.hashCode),
-                                                                story.hashCode),
-                                                            poster.hashCode),
-                                                        type.hashCode),
-                                                    year.hashCode),
-                                                views.hashCode),
-                                            imdbrate.hashCode),
-                                        mpr.hashCode),
-                                    seasons.hashCode),
-                                category.hashCode),
-                            serverip.hashCode),
-                        url.hashCode),
-                    background.hashCode),
-                cast.hashCode),
-            director.hashCode),
-        genre.hashCode));
+                                                                    $jc(
+                                                                        $jc(
+                                                                            $jc($jc(0, id.hashCode),
+                                                                                title.hashCode),
+                                                                            story.hashCode),
+                                                                        poster.hashCode),
+                                                                    type.hashCode),
+                                                                year.hashCode),
+                                                            views.hashCode),
+                                                        imdbrate.hashCode),
+                                                    mpr.hashCode),
+                                                seasons.hashCode),
+                                            category.hashCode),
+                                        serverip.hashCode),
+                                    url.hashCode),
+                                url360.hashCode),
+                            url720.hashCode),
+                        background.hashCode),
+                    cast.hashCode),
+                director.hashCode),
+            genre.hashCode),
+        srt.hashCode));
   }
 
   @override
@@ -505,10 +551,13 @@ class _$PostListItem extends PostListItem {
           ..add('category', category)
           ..add('serverip', serverip)
           ..add('url', url)
+          ..add('url360', url360)
+          ..add('url720', url720)
           ..add('background', background)
           ..add('cast', cast)
           ..add('director', director)
-          ..add('genre', genre))
+          ..add('genre', genre)
+          ..add('srt', srt))
         .toString();
   }
 }
@@ -569,6 +618,14 @@ class PostListItemBuilder
   String get url => _$this._url;
   set url(String url) => _$this._url = url;
 
+  String _url360;
+  String get url360 => _$this._url360;
+  set url360(String url360) => _$this._url360 = url360;
+
+  String _url720;
+  String get url720 => _$this._url720;
+  set url720(String url720) => _$this._url720 = url720;
+
   String _background;
   String get background => _$this._background;
   set background(String background) => _$this._background = background;
@@ -584,6 +641,10 @@ class PostListItemBuilder
   String _genre;
   String get genre => _$this._genre;
   set genre(String genre) => _$this._genre = genre;
+
+  String _srt;
+  String get srt => _$this._srt;
+  set srt(String srt) => _$this._srt = srt;
 
   PostListItemBuilder();
 
@@ -602,10 +663,13 @@ class PostListItemBuilder
       _category = _$v.category;
       _serverip = _$v.serverip;
       _url = _$v.url;
+      _url360 = _$v.url360;
+      _url720 = _$v.url720;
       _background = _$v.background;
       _cast = _$v.cast;
       _director = _$v.director;
       _genre = _$v.genre;
+      _srt = _$v.srt;
       _$v = null;
     }
     return this;
@@ -641,10 +705,13 @@ class PostListItemBuilder
             category: category,
             serverip: serverip,
             url: url,
+            url360: url360,
+            url720: url720,
             background: background,
             cast: cast,
             director: director,
-            genre: genre);
+            genre: genre,
+            srt: srt);
     replace(_$result);
     return _$result;
   }
