@@ -1,4 +1,4 @@
-package net.halasat.halasatcinemamobile;
+package net.halasat.cinema;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
