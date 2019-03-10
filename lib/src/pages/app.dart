@@ -87,6 +87,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'HalaSat Cinema',
       theme: ThemeData.dark()
           .copyWith(primaryColor: Colors.red, accentColor: Colors.red),
