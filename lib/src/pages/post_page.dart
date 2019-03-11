@@ -340,8 +340,6 @@ class _PostPageState extends State<PostPage> {
         'subs.name': [subtitle]
       },
     );
-    print('this is the url: $url');
-    print('this is the title: $title');
     intent.launch();
   }
 }
