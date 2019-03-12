@@ -5,10 +5,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:halasat_cinema_mobile/src/const.dart';
 import 'package:halasat_cinema_mobile/src/data/search_mock.dart';
+import 'package:halasat_cinema_mobile/src/models/category.dart';
 import 'package:halasat_cinema_mobile/src/models/featured.dart';
 import 'package:halasat_cinema_mobile/src/models/post.dart';
 import 'package:halasat_cinema_mobile/src/models/post_list.dart';
 import 'package:halasat_cinema_mobile/src/pages/post_page.dart';
+import 'package:halasat_cinema_mobile/src/services/categories.dart';
 import 'package:halasat_cinema_mobile/src/services/featured.dart';
 import 'package:halasat_cinema_mobile/src/services/post.dart';
 import 'package:halasat_cinema_mobile/src/services/post_list_category.dart';
@@ -17,72 +19,6 @@ import 'package:halasat_cinema_mobile/src/widgets/post_row.dart';
 
 class App extends StatelessWidget {
   final Future<Featured> _featured = fetchFeatured();
-  final List<Widget> _postRows = [
-    PostRow(
-      title: 'Latest Posts',
-      titleBorderColor: Colors.blue,
-    ),
-    PostRow(
-      title: 'TV Shows',
-      titleBorderColor: Colors.purple,
-      fetchList: fetchPostListCategory,
-      category: 1,
-    ),
-    PostRow(
-      title: 'US Box Office',
-      titleBorderColor: Colors.cyan,
-      fetchList: fetchPostListCategory,
-      category: 10,
-    ),
-    PostRow(
-      title: 'Bollywood Movies',
-      titleBorderColor: Colors.purple,
-      fetchList: fetchPostListCategory,
-      category: 3,
-    ),
-    PostRow(
-      title: 'Bollywood Shows',
-      titleBorderColor: Colors.purple,
-      fetchList: fetchPostListCategory,
-      category: 8,
-    ),
-    PostRow(
-      title: 'Arabic Movies',
-      titleBorderColor: Colors.brown,
-      fetchList: fetchPostListCategory,
-      category: 7,
-    ),
-    PostRow(
-      title: 'Arabic Shows',
-      titleBorderColor: Colors.brown,
-      fetchList: fetchPostListCategory,
-      category: 4,
-    ),
-    PostRow(
-      title: 'Asian Movies',
-      titleBorderColor: Colors.green,
-      fetchList: fetchPostListCategory,
-      category: 6,
-    ),
-    PostRow(
-      title: 'Asian Shows',
-      titleBorderColor: Colors.green,
-      fetchList: fetchPostListCategory,
-      category: 5,
-    ),
-    PostRow(
-      title: 'Anime Movies',
-      titleBorderColor: Colors.amber,
-      fetchList: fetchPostListCategory,
-      category: 9,
-    ),
-    PostRow(
-      title: 'Anime Shows',
-      titleBorderColor: Colors.amber,
-      fetchList: fetchPostListCategory,
-      category: 2,
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -108,25 +44,43 @@ class App extends StatelessWidget {
         ),
         body: SafeArea(
           bottom: false,
-          child: ListView(
-            addAutomaticKeepAlives: true,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: FutureBuilder(
-                  future: _featured,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<Featured> snapshot) {
-                    if (snapshot.hasData) {
-                      Featured featured = snapshot.data;
-                      return _buildCarouselSlider(context, featured);
-                    } else
-                      return Align(child: CircularProgressIndicator());
-                  },
-                ),
+          child: ListView(addAutomaticKeepAlives: true, children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: FutureBuilder(
+                future: _featured,
+                builder:
+                    (BuildContext context, AsyncSnapshot<Featured> snapshot) {
+                  if (snapshot.hasData) {
+                    Featured featured = snapshot.data;
+                    return _buildCarouselSlider(context, featured);
+                  } else
+                    return Align(child: CircularProgressIndicator());
+                },
               ),
-            ]..addAll(_postRows),
-          ),
+            ),
+            FutureBuilder(
+              future: fetchCategories(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<Category>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done)
+                  return Column(
+                    children: snapshot.data
+                        .where((Category item) => item.id != '13')
+                        .map<Widget>(
+                          (Category item) => PostRow(
+                                title: item.title,
+                                titleBorderColor: Theme.of(context).accentColor,
+                                fetchList: fetchPostListCategory,
+                                category: int.parse(item.id),
+                              ),
+                        )
+                        .toList(),
+                  );
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+          ]),
         ),
       ),
     );

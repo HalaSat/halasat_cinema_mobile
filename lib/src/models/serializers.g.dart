@@ -7,6 +7,7 @@ part of 'serializers.dart';
 // **************************************************************************
 
 Serializers _$serializers = (new Serializers().toBuilder()
+      ..add(Category.serializer)
       ..add(Episode.serializer)
       ..add(Featured.serializer)
       ..add(FeaturedItem.serializer)
