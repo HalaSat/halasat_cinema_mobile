@@ -135,7 +135,7 @@ class App extends StatelessWidget {
     return FutureBuilder(
       future: fetchCategories(),
       builder: (BuildContext context, AsyncSnapshot<List<Category>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done)
+        if (snapshot.hasData) {
           return Column(
             children: snapshot.data
                 .where((Category item) => item.id != '13')
@@ -149,6 +149,9 @@ class App extends StatelessWidget {
                 )
                 .toList(),
           );
+        }
+        else if (snapshot.hasError)
+          return Center(child: Text('An Error occured'));
         return Center(child: CircularProgressIndicator());
       },
     );

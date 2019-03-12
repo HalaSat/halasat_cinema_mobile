@@ -316,9 +316,10 @@ class _PostPageState extends State<PostPage> {
             final String url = episode.url.isEmpty
                 ? episode.url360.isEmpty ? episode.url720 : episode.url360
                 : episode.url;
+            print(url);
 
             _launchVideo(
-              url: url,
+              url: episode.url,
               title: widget.postListItem.title + ' ' + episode.title,
             );
           },
@@ -335,9 +336,9 @@ class _PostPageState extends State<PostPage> {
       package: kMXPlayer,
       arguments: {
         'title': title,
-        'subs': [Uri.encodeFull(subtitle)],
-        'subs.enable': [Uri.encodeFull(subtitle)],
-        'subs.name': [subtitle]
+        // 'subs': [Uri.encodeFull(subtitle)],
+        // 'subs.enable': [Uri.encodeFull(subtitle)],
+        // 'subs.name': [subtitle]
       },
     );
     intent.launch();

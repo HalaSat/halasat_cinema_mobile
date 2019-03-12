@@ -11,11 +11,12 @@ import 'package:halasat_cinema_mobile/src/widgets/post_card.dart';
 typedef Future<PostList> FetchList(int category, int page);
 
 class PostRow extends StatefulWidget {
-  const PostRow(
-      {this.fetchList = fetchPostList,
-      this.category = 1,
-      this.title = 'Recommended',
-      this.titleBorderColor = Colors.red});
+  const PostRow({
+    this.fetchList = fetchPostList,
+    this.category = 1,
+    this.title = 'Recommended',
+    this.titleBorderColor = Colors.red,
+  });
 
   final FetchList fetchList;
   final int category;
@@ -62,8 +63,11 @@ class _PostRowState extends State<PostRow> with AutomaticKeepAliveClientMixin {
           ? _buildList(context, _dataList)
           : Center(
               child: Container(
-                  height: 330.0,
-                  child: Align(child: LinearProgressIndicator())),
+                height: 330.0,
+                child: Align(
+                  child: LinearProgressIndicator(),
+                ),
+              ),
             ),
     );
   }
