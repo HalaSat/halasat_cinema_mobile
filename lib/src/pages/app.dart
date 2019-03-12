@@ -4,17 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:halasat_cinema_mobile/src/const.dart';
-import 'package:halasat_cinema_mobile/src/data/search_mock.dart';
+import 'package:halasat_cinema_mobile/src/delegates/post_search.dart';
 import 'package:halasat_cinema_mobile/src/models/category.dart';
 import 'package:halasat_cinema_mobile/src/models/featured.dart';
 import 'package:halasat_cinema_mobile/src/models/post.dart';
-import 'package:halasat_cinema_mobile/src/models/post_list.dart';
 import 'package:halasat_cinema_mobile/src/pages/post_page.dart';
 import 'package:halasat_cinema_mobile/src/services/categories.dart';
 import 'package:halasat_cinema_mobile/src/services/featured.dart';
 import 'package:halasat_cinema_mobile/src/services/post.dart';
 import 'package:halasat_cinema_mobile/src/services/post_list_category.dart';
-import 'package:halasat_cinema_mobile/src/services/search.dart';
 import 'package:halasat_cinema_mobile/src/widgets/post_row.dart';
 
 class App extends StatelessWidget {
@@ -25,19 +23,21 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'HalaSat Cinema',
-      theme: ThemeData.dark()
-          .copyWith(primaryColor: Colors.red, accentColor: Colors.red),
+      theme: ThemeData.dark().copyWith(
+        primaryColor: Colors.red,
+        accentColor: Colors.red,
+      ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('HalaSat Cinema'),
+          title: const Text('HalaSat Cinema'),
           actions: <Widget>[
             Builder(
               builder: (context) => IconButton(
                     icon: Icon(Icons.search),
-                    onPressed: () {
-                      showSearch(
-                          context: context, delegate: PostSearchDelegate());
-                    },
+                    onPressed: () => showSearch(
+                          context: context,
+                          delegate: PostSearchDelegate(),
+                        ),
                   ),
             ),
           ],
@@ -45,58 +45,40 @@ class App extends StatelessWidget {
         body: SafeArea(
           bottom: false,
           child: ListView(addAutomaticKeepAlives: true, children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: FutureBuilder(
-                future: _featured,
-                builder:
-                    (BuildContext context, AsyncSnapshot<Featured> snapshot) {
-                  if (snapshot.hasData) {
-                    Featured featured = snapshot.data;
-                    return _buildCarouselSlider(context, featured);
-                  } else
-                    return Align(child: CircularProgressIndicator());
-                },
-              ),
-            ),
-            FutureBuilder(
-              future: fetchCategories(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<Category>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done)
-                  return Column(
-                    children: snapshot.data
-                        .where((Category item) => item.id != '13')
-                        .map<Widget>(
-                          (Category item) => PostRow(
-                                title: item.title,
-                                titleBorderColor: Theme.of(context).accentColor,
-                                fetchList: fetchPostListCategory,
-                                category: int.parse(item.id),
-                              ),
-                        )
-                        .toList(),
-                  );
-                return Center(child: CircularProgressIndicator());
-              },
-            ),
+            _buildCarouselSlider(context),
+            _buildCategories(context),
           ]),
         ),
       ),
     );
   }
 
-  CarouselSlider _buildCarouselSlider(BuildContext context, Featured featured) {
-    return CarouselSlider(
-      autoPlay: true,
-      height: 200.0,
-      items: featured.featured.map((FeaturedItem item) {
-        return Builder(
-          builder: (BuildContext context) {
-            return _buildFeaturedPost(context, item);
-          },
-        );
-      }).toList(),
+  Widget _buildCarouselSlider(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: FutureBuilder(
+        future: _featured,
+        builder: (BuildContext context, AsyncSnapshot<Featured> snapshot) {
+          if (snapshot.hasData) {
+            Featured featured = snapshot.data;
+            return CarouselSlider(
+              autoPlay: true,
+              height: 200.0,
+              items: featured.featured.map((FeaturedItem item) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return _buildFeaturedPost(context, item);
+                  },
+                );
+              }).toList(),
+            );
+            ;
+          } else
+            return const Align(
+              child: CircularProgressIndicator(),
+            );
+        },
+      ),
     );
   }
 
@@ -148,174 +130,27 @@ class App extends StatelessWidget {
       },
     );
   }
-}
 
-class PostSearchDelegate extends SearchDelegate<String> {
-  final List<PostListItem> posts = searchList.posts.toList();
-
-  final List<PostListItem> recentPosts =
-      searchList.posts.sublist(4, 12).toList();
-
-  @override
-  ThemeData appBarTheme(BuildContext context) {
-    return Theme.of(context);
-  }
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: AnimatedIcon(
-        icon: AnimatedIcons.menu_arrow,
-        progress: transitionAnimation,
-      ),
-      onPressed: () {
-        close(context, null);
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
+  Widget _buildCategories(BuildContext context) {
     return FutureBuilder(
-      future: searchPost(query, ''),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          PostList postList = snapshot.data;
-          return ListView.builder(
-            itemCount: postList.posts.length,
-            itemBuilder: (context, index) {
-              PostListItem post = postList.posts[index];
-
-              return _buildResultItem(context, post);
-            },
+      future: fetchCategories(),
+      builder: (BuildContext context, AsyncSnapshot<List<Category>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done)
+          return Column(
+            children: snapshot.data
+                .where((Category item) => item.id != '13')
+                .map<Widget>(
+                  (Category item) => PostRow(
+                        title: item.title,
+                        titleBorderColor: Theme.of(context).accentColor,
+                        fetchList: fetchPostListCategory,
+                        category: int.parse(item.id),
+                      ),
+                )
+                .toList(),
           );
-        }
         return Center(child: CircularProgressIndicator());
       },
     );
   }
-
-  Padding _buildResultItem(BuildContext context, PostListItem post) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: InkWell(
-        child: Container(
-          height: 240.5,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: FadeInImage(
-                  width: 150.0,
-                  height: 240.5,
-                  fit: BoxFit.cover,
-                  image: NetworkImage(post.poster),
-                  placeholder: AssetImage('assets/post-placeholder.png'),
-                ),
-              ),
-              Container(
-                child: Container(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  width: MediaQuery.of(context).size.width / 2,
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        post.title,
-                        textAlign: TextAlign.start,
-                        style: Theme.of(context).textTheme.body2,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              post.year,
-                              style: Theme.of(context).textTheme.caption,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  post.imdbrate,
-                                  style: Theme.of(context).textTheme.caption,
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  size: Theme.of(context)
-                                      .textTheme
-                                      .caption
-                                      .fontSize,
-                                  color: Theme.of(context).accentColor,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        child: Text(post.story),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        onTap: () => _goToPostPage(context, post),
-      ),
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    final Future<PostList> posts =
-        query.isEmpty ? searchPost(query, '/page') : searchPost(query, '');
-    return FutureBuilder(
-      future: posts,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          PostList postList = snapshot.data;
-
-          return ListView.builder(
-            itemCount: postList.posts.length,
-            itemBuilder: (context, index) {
-              PostListItem post = postList.posts[index];
-
-              return ListTile(
-                leading: Icon(
-                  post.type == '0' ? Icons.movie : Icons.tv,
-                ),
-                title: Text(post.title),
-                onTap: () => _goToPostPage(context, post),
-              );
-            },
-          );
-        }
-        return Center(child: CircularProgressIndicator());
-      },
-    );
-  }
-
-  void _goToPostPage(context, PostListItem post) => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => PostPage(postListItem: post),
-        ),
-      );
 }
