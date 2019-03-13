@@ -81,10 +81,7 @@ class PostSearchDelegate extends SearchDelegate<String> {
                   post.type == '0' ? Icons.movie : Icons.menu,
                 ),
                 title: Text(post.title),
-                onTap: () => PostVerticalCard(
-                      post: post,
-                      onPressed: () => _goToPostPage(context, post),
-                    ),
+                onTap: () => _goToPostPage(context, post),
               );
             },
           );

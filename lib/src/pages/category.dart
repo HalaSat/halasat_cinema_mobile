@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:halasat_cinema_mobile/src/models/post_list.dart';
 import 'package:halasat_cinema_mobile/src/pages/post_page.dart';
 import 'package:halasat_cinema_mobile/src/services/post_list_category.dart';
-import 'package:halasat_cinema_mobile/src/widgets/post_card.dart';
 import 'package:halasat_cinema_mobile/src/widgets/post_card_vertical.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 
@@ -55,18 +54,21 @@ class _CategoryPageState extends State<CategoryPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.only(bottom: 10.0),
-        child: _dataList != null
-            ? _buildList(context, _dataList)
-            : Center(
-                child: Container(
-                  height: 330.0,
-                  child: Align(
-                    child: CircularProgressIndicator(),
+      body: SafeArea(
+        bottom: false,
+        child: Container(
+          margin: EdgeInsets.only(bottom: 10.0),
+          child: _dataList != null
+              ? _buildList(context, _dataList)
+              : Center(
+                  child: Container(
+                    height: 330.0,
+                    child: Align(
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }
@@ -75,7 +77,7 @@ class _CategoryPageState extends State<CategoryPage>
     return Column(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.only(bottom: 5.0),
+          padding: EdgeInsets.symmetric(vertical: 5.0),
           margin: EdgeInsets.only(bottom: 8.0),
           decoration: BoxDecoration(
             border: Border(

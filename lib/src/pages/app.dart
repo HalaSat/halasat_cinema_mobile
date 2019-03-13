@@ -25,8 +25,8 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Shashety Cinema',
       theme: ThemeData.dark().copyWith(
-        primaryColor: Color(0xffc0392b),
-        accentColor: Color(0xffe74c3c),
+        primaryColor: Color(0xff40739e),
+        accentColor: Color(0xff487eb0),
       ),
       home: Scaffold(
         drawer: _buildDrawer(context),
