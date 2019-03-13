@@ -8,6 +8,7 @@ import 'package:halasat_cinema_mobile/src/delegates/post_search.dart';
 import 'package:halasat_cinema_mobile/src/models/category.dart';
 import 'package:halasat_cinema_mobile/src/models/featured.dart';
 import 'package:halasat_cinema_mobile/src/models/post.dart';
+import 'package:halasat_cinema_mobile/src/pages/category.dart';
 import 'package:halasat_cinema_mobile/src/pages/post_page.dart';
 import 'package:halasat_cinema_mobile/src/services/categories.dart';
 import 'package:halasat_cinema_mobile/src/services/featured.dart';
@@ -22,26 +23,14 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'HalaSat Cinema',
+      title: 'Shashety Cinema',
       theme: ThemeData.dark().copyWith(
-        primaryColor: Colors.red,
-        accentColor: Colors.red,
+        primaryColor: Color(0xffc0392b),
+        accentColor: Color(0xffe74c3c),
       ),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('HalaSat Cinema'),
-          actions: <Widget>[
-            Builder(
-              builder: (context) => IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () => showSearch(
-                          context: context,
-                          delegate: PostSearchDelegate(),
-                        ),
-                  ),
-            ),
-          ],
-        ),
+        drawer: _buildDrawer(context),
+        appBar: _buildAppBar(context),
         body: SafeArea(
           bottom: false,
           child: ListView(addAutomaticKeepAlives: true, children: <Widget>[
@@ -49,6 +38,43 @@ class App extends StatelessWidget {
             _buildCategories(context),
           ]),
         ),
+      ),
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text('Shashety Cinema'),
+      actions: <Widget>[
+        Builder(
+          builder: (context) => IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () => showSearch(
+                      context: context,
+                      delegate: PostSearchDelegate(),
+                    ),
+              ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      child: FutureBuilder(
+        future: fetchCategories(),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<Category>> snapshot) {
+          if (snapshot.hasData)
+            return ListView(
+              children: snapshot.data
+                  .map<Widget>(
+                      (Category item) => _buildCategoryItem(context, item))
+                  .toList(),
+            );
+          else if (snapshot.hasError) return Text('An error occured');
+          return LinearProgressIndicator();
+        },
       ),
     );
   }
@@ -149,10 +175,28 @@ class App extends StatelessWidget {
                 )
                 .toList(),
           );
-        }
-        else if (snapshot.hasError)
+        } else if (snapshot.hasError)
           return Center(child: Text('An Error occured'));
         return Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+
+  Widget _buildCategoryItem(BuildContext context, Category c) {
+    return ListTile(
+      leading: Icon(
+        c.type == '0' ? Icons.movie : Icons.menu,
+        color: Theme.of(context).accentColor,
+      ),
+      title: Text(c.title),
+      onTap: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (BuildContext context) {
+          return CategoryPage(
+            category: int.parse(c.type),
+            title: c.title,
+          );
+        }));
       },
     );
   }

@@ -10,12 +10,12 @@ typedef void OnTapCallback();
 
 // WIDGETS
 class PostCard extends StatelessWidget {
-  PostCard({Key key, @required this.postListItem, @required this.onPress})
+  PostCard({Key key, @required this.postListItem, @required this.onPressed})
       : assert(postListItem != null),
         super(key: key);
 
   final PostListItem postListItem;
-  final OnTapCallback onPress;
+  final OnTapCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class PostCard extends StatelessWidget {
             ),
           ],
         ),
-        onTap: onPress,
+        onTap: onPressed,
       ),
     );
   }

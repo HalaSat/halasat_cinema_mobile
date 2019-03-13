@@ -285,7 +285,7 @@ class _PostPageState extends State<PostPage> {
           final PostListItem other = item.other[index];
           return PostCard(
             postListItem: other,
-            onPress: () {
+            onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => PostPage(postListItem: other),
