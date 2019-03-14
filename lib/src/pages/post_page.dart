@@ -38,7 +38,6 @@ class _PostPageState extends State<PostPage> {
       fetchSeries(id).then(
         (data) => setState(() {
               seasons = data;
-              print(data);
             }),
       );
     }
@@ -316,7 +315,6 @@ class _PostPageState extends State<PostPage> {
             final String url = episode.url.isEmpty
                 ? episode.url360.isEmpty ? episode.url720 : episode.url360
                 : episode.url;
-            print(url);
 
             _launchVideo(
               url: episode.url,
@@ -336,6 +334,7 @@ class _PostPageState extends State<PostPage> {
       package: kMXPlayer,
       arguments: {
         'title': title,
+        'filename': title,
         // 'subs': [Uri.encodeFull(subtitle)],
         // 'subs.enable': [Uri.encodeFull(subtitle)],
         // 'subs.name': [subtitle]
