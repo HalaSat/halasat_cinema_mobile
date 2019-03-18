@@ -195,8 +195,14 @@ class HomePage extends StatelessWidget {
                 )
                 .toList(),
           );
-        } else if (snapshot.hasError) return _buildNetworkError(context);
-        return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError)
+          return SizedBox(height: 200.0, child: _buildNetworkError(context));
+        return SizedBox(
+          height: 200.0,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
       },
     );
   }

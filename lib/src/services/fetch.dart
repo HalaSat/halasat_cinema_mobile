@@ -9,7 +9,7 @@ Future<dynamic> fetch(String urlPrefix, String suffix) async {
   // return postMock;
   Response response;
   try {
-    response = await get('$urlPrefix$suffix');
+    response = await get('$urlPrefix$suffix').timeout(Duration(seconds: 15));
   } catch (e) {
     return Future.error(
       '$e at $urlPrefix$suffix',
