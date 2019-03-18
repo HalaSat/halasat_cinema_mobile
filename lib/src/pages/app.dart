@@ -17,26 +17,38 @@ import 'package:halasat_cinema_mobile/src/services/post_list_category.dart';
 import 'package:halasat_cinema_mobile/src/widgets/post_row.dart';
 
 class App extends StatelessWidget {
-  final Future<Featured> _featured = fetchFeatured();
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Shashety Cinema',
       theme: ThemeData.dark().copyWith(
-        primaryColor: Color(0xff40739e),
-        accentColor: Color(0xff487eb0),
+        primaryColor: Colors.black,
+        accentColor: Colors.red,
       ),
-      home: Scaffold(
-        drawer: _buildDrawer(context),
-        appBar: _buildAppBar(context),
-        body: SafeArea(
-          bottom: false,
-          child: ListView(addAutomaticKeepAlives: true, children: <Widget>[
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  final Future<Featured> _featured = fetchFeatured();
+
+  HomePage({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: _buildDrawer(context),
+      appBar: _buildAppBar(context),
+      body: SafeArea(
+        bottom: false,
+        child: ListView(
+          addAutomaticKeepAlives: true,
+          children: <Widget>[
             _buildCarouselSlider(context),
             _buildCategories(context),
-          ]),
+          ],
         ),
       ),
     );
@@ -61,20 +73,22 @@ class App extends StatelessWidget {
 
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
-      child: FutureBuilder(
-        future: fetchCategories(),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<Category>> snapshot) {
-          if (snapshot.hasData)
-            return ListView(
-              children: snapshot.data
-                  .map<Widget>(
-                      (Category item) => _buildCategoryItem(context, item))
-                  .toList(),
-            );
-          else if (snapshot.hasError) return Text('An error occured');
-          return LinearProgressIndicator();
-        },
+      child: SafeArea(
+        child: FutureBuilder(
+          future: fetchCategories(),
+          builder:
+              (BuildContext context, AsyncSnapshot<List<Category>> snapshot) {
+            if (snapshot.hasData)
+              return ListView(
+                children: snapshot.data
+                    .map<Widget>((Category item) =>
+                        _buildDrawerCategoryItem(context, item))
+                    .toList(),
+              );
+            else if (snapshot.hasError) return _buildNetworkError(context);
+            return LinearProgressIndicator();
+          },
+        ),
       ),
     );
   }
@@ -90,19 +104,23 @@ class App extends StatelessWidget {
             return CarouselSlider(
               autoPlay: true,
               height: 200.0,
-              items: featured.featured.map((FeaturedItem item) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return _buildFeaturedPost(context, item);
-                  },
-                );
-              }).toList(),
+              items: featured.featured.map(
+                (FeaturedItem item) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return _buildFeaturedPost(context, item);
+                    },
+                  );
+                },
+              ).toList(),
             );
-            ;
-          } else
-            return const Align(
-              child: CircularProgressIndicator(),
-            );
+          } else if (snapshot.hasError) {
+            return _buildNetworkError(context);
+          }
+          return Container(
+            height: 200.0,
+            child: Center(child: CircularProgressIndicator()),
+          );
         },
       ),
     );
@@ -147,11 +165,13 @@ class App extends StatelessWidget {
       onTap: () async {
         Post res = await fetchPost(int.parse(item.id));
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (BuildContext context) {
-            return PostPage(
-              postListItem: res.movies[0],
-            );
-          }),
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return PostPage(
+                postListItem: res.movies[0],
+              );
+            },
+          ),
         );
       },
     );
@@ -175,14 +195,13 @@ class App extends StatelessWidget {
                 )
                 .toList(),
           );
-        } else if (snapshot.hasError)
-          return Center(child: Text('An Error occured'));
+        } else if (snapshot.hasError) return _buildNetworkError(context);
         return Center(child: CircularProgressIndicator());
       },
     );
   }
 
-  Widget _buildCategoryItem(BuildContext context, Category c) {
+  Widget _buildDrawerCategoryItem(BuildContext context, Category c) {
     return ListTile(
       leading: Icon(
         c.type == '0' ? Icons.movie : Icons.menu,
@@ -190,14 +209,26 @@ class App extends StatelessWidget {
       ),
       title: Text(c.title),
       onTap: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (BuildContext context) {
-          return CategoryPage(
-            category: int.parse(c.type),
-            title: c.title,
-          );
-        }));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return CategoryPage(
+                category: int.parse(c.id),
+                title: c.title,
+              );
+            },
+          ),
+        );
       },
+    );
+  }
+
+  Widget _buildNetworkError(BuildContext context) {
+    return Center(
+      child: Text(
+        'Network error',
+        style: TextStyle(color: Colors.red),
+      ),
     );
   }
 }
