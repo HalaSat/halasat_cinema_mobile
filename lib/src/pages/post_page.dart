@@ -47,7 +47,7 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    _checkMXIsAvailable(context);
+    _checkPlayerIsAvailable(context);
 
     return Scaffold(
       body: _buildBody(context),
@@ -65,6 +65,7 @@ class _PostPageState extends State<PostPage> {
           return CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
+                floating: true,
                 expandedHeight: 250.0,
                 flexibleSpace: Stack(
                   fit: StackFit.expand,
@@ -86,7 +87,7 @@ class _PostPageState extends State<PostPage> {
                         ),
                       ),
                     ),
-                    Center(
+                    !(movie.type == '1') ? Center(
                       child: GestureDetector(
                         onTap: () {
                           final String url = movie.url.isEmpty
@@ -114,7 +115,7 @@ class _PostPageState extends State<PostPage> {
                           ),
                         ),
                       ),
-                    ),
+                    ) : SizedBox(),
                   ],
                 ),
               ),
@@ -168,7 +169,7 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  Future<void> _checkMXIsAvailable(BuildContext context) async {
+  Future<void> _checkPlayerIsAvailable(BuildContext context) async {
     try {
       await AppAvailability.checkAvailability(kMXPlayer);
     } catch (e) {
@@ -317,7 +318,7 @@ class _PostPageState extends State<PostPage> {
                 : episode.url;
 
             _launchVideo(
-              url: episode.url,
+              url: url,
               title: widget.postListItem.title + ' ' + episode.title,
             );
           },
