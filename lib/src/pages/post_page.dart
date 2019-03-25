@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
@@ -10,6 +12,7 @@ import 'package:halasat_cinema_mobile/src/models/post_list.dart';
 import 'package:halasat_cinema_mobile/src/models/season.dart';
 import 'package:halasat_cinema_mobile/src/services/vodu.dart';
 import 'package:halasat_cinema_mobile/src/widgets/post_card.dart';
+import 'package:simple_permissions/simple_permissions.dart';
 
 class PostPage extends StatefulWidget {
   PostPage({Key key, @required this.postListItem}) : super(key: key);
@@ -87,35 +90,37 @@ class _PostPageState extends State<PostPage> {
                         ),
                       ),
                     ),
-                    !(movie.type == '1') ? Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          final String url = movie.url.isEmpty
-                              ? movie.url360.isEmpty
-                                  ? movie.url720
-                                  : movie.url360
-                              : movie.url;
+                    !(movie.type == '1')
+                        ? Center(
+                            child: GestureDetector(
+                              onTap: () {
+                                final String url = movie.url.isEmpty
+                                    ? movie.url360.isEmpty
+                                        ? movie.url720
+                                        : movie.url360
+                                    : movie.url;
 
-                          _launchVideo(
-                              url: url,
-                              title: movie.title,
-                              subtitle: movie.srt);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context)
-                                .scaffoldBackgroundColor
-                                .withOpacity(0.7),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.play_arrow,
-                            size: 80.0,
-                            color: Theme.of(context).accentColor,
-                          ),
-                        ),
-                      ),
-                    ) : SizedBox(),
+                                _launchVideo(
+                                    url: url,
+                                    title: movie.title,
+                                    subtitle: movie.srt);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .scaffoldBackgroundColor
+                                      .withOpacity(0.7),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.play_arrow,
+                                  size: 80.0,
+                                  color: Theme.of(context).accentColor,
+                                ),
+                              ),
+                            ),
+                          )
+                        : SizedBox(),
                   ],
                 ),
               ),
@@ -328,7 +333,7 @@ class _PostPageState extends State<PostPage> {
   }
 
   void _launchVideo(
-      {@required String url, String title = 'Episode', String subtitle}) {
+      {@required String url, String title = 'Episode', String subtitle}) async {
     AndroidIntent intent = AndroidIntent(
       action: 'action_view',
       data: Uri.encodeFull(url),
@@ -341,7 +346,22 @@ class _PostPageState extends State<PostPage> {
         // 'subs.name': [subtitle]
       },
     );
-    intent.launch();
+    await SimplePermissions.checkPermission(Permission.WriteExternalStorage);
+    await SimplePermissions.checkPermission(Permission.ReadExternalStorage); 
+    await _downloadFile(subtitle, title + '.srt');
+    await intent.launch();
+  }
+
+   static HttpClient httpClient = new HttpClient();
+
+  Future<File> _downloadFile(String url, String filename) async {
+    var request = await httpClient.getUrl(Uri.parse(url));
+    var response = await request.close();
+    var bytes = await consolidateHttpClientResponseBytes(response);
+    String dir = '/storage/emulated/0/Subtitles';
+    File file = new File('$dir/$filename');
+    await file.writeAsBytes(bytes);
+    return file;
   }
 }
 
@@ -384,4 +404,5 @@ class InfoRow extends StatelessWidget {
       ),
     );
   }
+ 
 }
