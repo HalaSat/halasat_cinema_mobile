@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:android_intent/android_intent.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
 
 import 'package:halasat_cinema_mobile/src/const.dart';
@@ -12,7 +13,7 @@ import 'package:halasat_cinema_mobile/src/models/post_list.dart';
 import 'package:halasat_cinema_mobile/src/models/season.dart';
 import 'package:halasat_cinema_mobile/src/services/vodu.dart';
 import 'package:halasat_cinema_mobile/src/widgets/post_card.dart';
-import 'package:simple_permissions/simple_permissions.dart';
+// import 'package:simple_permissions/simple_permissions.dart';
 
 class PostPage extends StatefulWidget {
   PostPage({Key key, @required this.postListItem}) : super(key: key);
@@ -26,6 +27,8 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
+  static const platform = const MethodChannel('mxplayer');
+
   Future<Post> post;
   List<Season> seasons;
 
@@ -103,7 +106,7 @@ class _PostPageState extends State<PostPage> {
                                 _launchVideo(
                                     url: url,
                                     title: movie.title,
-                                    subtitle: movie.srt);
+                                    subtitlesUrl: movie.srt);
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -332,27 +335,34 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  void _launchVideo(
-      {@required String url, String title = 'Episode', String subtitle}) async {
-    AndroidIntent intent = AndroidIntent(
-      action: 'action_view',
-      data: Uri.encodeFull(url),
-      package: kMXPlayer,
-      arguments: {
-        'title': title,
-        'filename': title,
-        // 'subs': [Uri.encodeFull(subtitle)],
-        // 'subs.enable': [Uri.encodeFull(subtitle)],
-        // 'subs.name': [subtitle]
-      },
+  Future<void> _launchVideo(
+      {@required String url,
+      String title = 'Episode',
+      String subtitlesUrl}) async {
+        
+    await platform.invokeMethod(
+      'launch_player',
+      {'url': url, 'title': title, 'subtitlesUrl': subtitlesUrl},
     );
-    await SimplePermissions.checkPermission(Permission.WriteExternalStorage);
-    await SimplePermissions.checkPermission(Permission.ReadExternalStorage); 
-    await _downloadFile(subtitle, title + '.srt');
-    await intent.launch();
+    // AndroidIntent intent = AndroidIntent(
+    //   action: 'action_view',
+    //   data: Uri.encodeFull(url),
+    //   package: kMXPlayer,
+    //   arguments: {
+    //     'title': title,
+    //     'filename': title,
+    //     // 'subs': [Uri.encodeFull(subtitle)],
+    //     // 'subs.enable': [Uri.encodeFull(subtitle)],
+    //     // 'subs.name': [subtitle]
+    //   },
+    // );
+    // await SimplePermissions.checkPermission(Permission.WriteExternalStorage);
+    // await SimplePermissions.checkPermission(Permission.ReadExternalStorage);
+    // await _downloadFile(subtitle, title + '.srt');
+    // await intent.launch();
   }
 
-   static HttpClient httpClient = new HttpClient();
+  static HttpClient httpClient = new HttpClient();
 
   Future<File> _downloadFile(String url, String filename) async {
     var request = await httpClient.getUrl(Uri.parse(url));
@@ -404,5 +414,4 @@ class InfoRow extends StatelessWidget {
       ),
     );
   }
- 
 }
